@@ -9,6 +9,7 @@ public class MoonlightApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MoonlightApplication.class, args);
+		System.out.println("Application Started");
 	}
 
 }

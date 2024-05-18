@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG" monitorInterval="30">
+   <Properties>
+      <Property name="fileName">logs/application.log</Property>
+      <Property name="fileNamePattern">logs/xelerate_system.%d{yyyy-MM-dd}.%i.log</Property>
+      <Property name="logPattern">%d [%thread] %-5level %logger{36} - %msg%n</Property>
+   </Properties>
+   <Appenders>
+      <RollingFile name="codegenLogAppender" fileName="${fileName}"
+                filePattern="${fileNamePattern}">
+         <PatternLayout pattern="${logPattern}"/>
+         <Policies>
+            <TimeBasedTriggeringPolicy/>
+            <SizeBasedTriggeringPolicy size="20MB"/>
+         </Policies>
+         <DefaultRolloverStrategy max="10"/>
+         <filters>
+            <DynamicThresholdFilter key="customLogLevel" defaultThreshold="DEBUG" onMatch="ACCEPT" onMismatch="DENY">
+               <KeyValuePair key="debug" value="DEBUG"/>
+               <KeyValuePair key="error" value="ERROR"/>
+               <KeyValuePair key="info" value="INFO"/>
+               <KeyValuePair key="trace" value="TRACE"/>
+            </DynamicThresholdFilter>
+         </filters>
+      </RollingFile>
+   </Appenders>
+   <Loggers>
+      <Logger name="com.ecom.moonlight.*" level="DEBUG" additivity="false">
+         <AppenderRef ref="codegenLogAppender"/>
+      </Logger>
+      <Root level="DEBUG">
+         <AppenderRef ref="codegenLogAppender"/>
+      </Root>
+   </Loggers>
+</Configuration>
