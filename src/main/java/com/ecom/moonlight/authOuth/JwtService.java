@@ -1,12 +1,16 @@
 package com.ecom.moonlight.authOuth;
 
 import java.security.Key;
-
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +20,26 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+
 @Service
 public class JwtService {
 
-    private final String secretKey="404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+
+
+  @Value("${spring.jwt.secretKey}")
+  private String secretKey;
+
+  @Value("${Spring.jwt.encryptionKey}")
+  private String encryptionKey;
 
 
     public String extractUsername(String jwt) {
-        return extractClaim(jwt, Claims::getSubject);
+       try{
+       String username = extractClaim(jwt, Claims::getSubject);
+       return decrypt(username);
+       }catch(Exception e){
+          throw new RuntimeException(e);
+       }
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -80,14 +96,36 @@ public class JwtService {
           UserDetails userDetails
           
   ) {
-    return Jwts
-            .builder()
-            .setClaims(extraClaims)
-            .setSubject(userDetails.getUsername())
-            .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 1000*60*24))
-            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-            .compact();
+    try{
+      String usename=encrypt(userDetails.getUsername());
+      return Jwts
+      .builder()
+      .setClaims(extraClaims)
+      .setSubject(usename)
+      .setIssuedAt(new Date(System.currentTimeMillis()))
+      .setExpiration(new Date(System.currentTimeMillis() + 1000*60*24))
+      .signWith(getSignInKey(), SignatureAlgorithm.HS512)
+      .compact();
+      }catch(Exception e){
+      throw new RuntimeException(e);
+    }
+  }
+   
+
+  public String encrypt(String data) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(encryptionKey.getBytes(), "AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+        byte[] encryptedData = cipher.doFinal(data.getBytes());
+        return Base64.getEncoder().encodeToString(encryptedData);
+    }
+
+    public String decrypt(String encryptedData) throws Exception {
+      Cipher cipher = Cipher.getInstance("AES");
+      SecretKeySpec secretKeySpec = new SecretKeySpec(encryptionKey.getBytes(), "AES");
+      cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+      byte[] decryptedData = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+      return new String(decryptedData);
   }
     
 }

@@ -19,5 +19,7 @@ public class EmailUserForLoginAndSignUp {
     @NonNull @NotEmpty @Size(min = 8)
     String password;
     
+    String role;
+    
     
 }

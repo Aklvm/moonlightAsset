@@ -4,12 +4,17 @@ import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ecom.moonlight.dto.CustomerDetail;
 import com.ecom.moonlight.dto.EmailUserForLoginAndSignUp;
 import com.ecom.moonlight.dto.Response;
 import com.ecom.moonlight.dto.UserSignUpLogin;
+import com.ecom.moonlight.service.implementation.FindUserProfile;
+import com.ecom.moonlight.service.implementation.UserProfileUpdation;
 import com.ecom.moonlight.service.implementation.emailImp.EmailLogin;
 import com.ecom.moonlight.service.implementation.emailImp.EmailSignUp;
 import com.ecom.moonlight.service.implementation.emailImp.EmailSignUpLogin;
@@ -35,6 +40,11 @@ public class UserLoginController {
     EmailSignUpLogin emailSignUpLogin;
     @Autowired
     Response response;
+    @Autowired
+    FindUserProfile findUserProfile;
+    @Autowired
+    UserProfileUpdation userProfileUpdation;
+
  
 
     @PostMapping("/otp/gen")
@@ -63,9 +73,9 @@ public class UserLoginController {
     
     @PostMapping("email/login")
     public ResponseEntity<Response> loginViaMail(@RequestBody @Valid EmailUserForLoginAndSignUp user) {
-      emailLogin.loginUser(user);
+      String jwtToken= emailLogin.loginUser(user);
       response.setResult("success");
-      response.setMessage("login successful");
+      response.setMessage(jwtToken);
       return ResponseEntity.ok().body(response); 
        
     }
@@ -83,6 +93,27 @@ public class UserLoginController {
       response.setResult("success");
       response.setMessage("Set your new password");
       return ResponseEntity.ok().body(response); 
-       
     }
+
+    @GetMapping("/getcustomerdetails")
+    public ResponseEntity<Response> getCustomerDetails(Principal principal) {
+      String user=ControllerUtilty.getUuid();
+      response.setResult("success");
+      response.setMessage(findUserProfile.getUserDetailById(user));
+      return ResponseEntity.ok().body(response); 
+      
+
+    }
+    @PostMapping("/updatecustomerdetails")
+    public ResponseEntity<Response> updateCustomerDetail(@RequestBody @Valid CustomerDetail customerDetail) {
+      String user=ControllerUtilty.getUuid();
+      userProfileUpdation.updateCustomerDetails(customerDetail,user);
+      response.setResult("success");
+      response.setMessage("successfully updated");
+      return ResponseEntity.ok().body(response); 
+      
+
+    }
+      
+
 }

@@ -20,11 +20,13 @@ target/
 *.iws
 *.iml
 *.ipr
+*.log
 
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
 /dist/
+/logs
 /nbdist/
 /.nb-gradle/
 build/

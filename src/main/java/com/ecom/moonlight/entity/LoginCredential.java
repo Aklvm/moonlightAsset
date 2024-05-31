@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,6 +27,8 @@ import lombok.Setter;
 public class LoginCredential implements UserDetails{
   @NotEmpty @NotNull @Id @Column(updatable=false)
   private String userId;
+  @Column(updatable=false,unique=true,nullable=false)
+  private String uuid;
   private String password;
   private String role;
   @CreationTimestamp

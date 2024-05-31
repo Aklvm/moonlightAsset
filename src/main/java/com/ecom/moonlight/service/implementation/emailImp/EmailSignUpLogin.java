@@ -22,8 +22,7 @@ public  class EmailSignUpLogin {
     @Autowired
     UserRepo userRepo;
 
-    @Autowired
-    LoginCredential user;
+    
 
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()-+=`~\\[\\]{}|;:'\",.<>/?]).{8,}$");
     PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();

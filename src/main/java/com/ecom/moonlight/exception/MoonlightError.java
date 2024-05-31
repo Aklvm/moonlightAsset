@@ -1,6 +1,5 @@
 package com.ecom.moonlight.exception;
 
-import org.springframework.stereotype.Component;
 
 import lombok.Getter;
 import lombok.Setter;

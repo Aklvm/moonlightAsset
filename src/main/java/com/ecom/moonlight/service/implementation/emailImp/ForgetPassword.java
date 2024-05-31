@@ -16,6 +16,7 @@ public class ForgetPassword  extends EmailSignUpLogin{
 
     public void updatePassword(EmailUserForLoginAndSignUp updateUser) {
       logger.debug("Inside method updatePassword: method execution started: EmailUserForLoginAndSignUp dto is {}", updateUser);
+      LoginCredential user=new LoginCredential();
          userExistOrNot(updateUser.getUserId())
         .map(LoginCredential::getPassword)
         .filter(pass ->passwordEncoder.matches(updateUser.getPassword(), pass))

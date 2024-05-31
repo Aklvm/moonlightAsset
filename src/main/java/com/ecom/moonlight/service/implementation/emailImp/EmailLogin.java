@@ -21,7 +21,7 @@ public class EmailLogin extends EmailSignUpLogin{
 
     Mlogger logger=Mlogger.getlogger(EmailLogin.class);
 
-        public  void loginUser(EmailUserForLoginAndSignUp emailUserForLoginAndSignUp){
+        public String loginUser(EmailUserForLoginAndSignUp emailUserForLoginAndSignUp){
         logger.debug("Inside method loginUser method : execution started: EmailUserForLoginAndSignUp dto is {}", emailUserForLoginAndSignUp);
          Optional<LoginCredential> userDetailWithEmailId =userExistOrNot(emailUserForLoginAndSignUp.getUserId());   
          boolean passwordCorrect =passwordEncoder.matches(emailUserForLoginAndSignUp.getPassword(),userDetailWithEmailId.get().getPassword());
@@ -30,8 +30,9 @@ public class EmailLogin extends EmailSignUpLogin{
             MoonlightError moonlightError = new MoonlightError("IE_CS_004","Password is wrong");
             throw new MoonLightException(moonlightError);
           }
-          jwtService.generateToken(userDetailWithEmailId.get());
+           String jwtToken =jwtService.generateToken(userDetailWithEmailId.get());
           logger.debug("Inside method loginUser : method executed successfully : Login successfull");
+          return jwtToken;
           
     }
     

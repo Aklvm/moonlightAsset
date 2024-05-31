@@ -1,5 +1,6 @@
 package com.ecom.moonlight.authOuth;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +27,7 @@ public class applicationConfig {
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-     @Bean
+   @Bean
   public AuthenticationProvider authenticationProvider() {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
     authProvider.setUserDetailsService(userDetailsService());
@@ -36,6 +37,11 @@ public class applicationConfig {
     @Bean 
     protected PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+    
+    @Bean 
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
 

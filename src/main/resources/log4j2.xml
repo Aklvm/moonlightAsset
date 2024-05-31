@@ -2,8 +2,8 @@
 <Configuration status="DEBUG" monitorInterval="30">
    <Properties>
       <Property name="fileName">logs/application.log</Property>
-      <Property name="fileNamePattern">logs/xelerate_system.%d{yyyy-MM-dd}.%i.log</Property>
       <Property name="logPattern">%d [%thread] %-5level %logger{36} - %msg%n</Property>
+      <Property name="fileNamePattern">logs/application.log.%d{yyyy-MM-dd}.%i.log</Property>
    </Properties>
    <Appenders>
       <RollingFile name="codegenLogAppender" fileName="${fileName}"
